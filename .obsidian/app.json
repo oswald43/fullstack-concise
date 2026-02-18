@@ -1,0 +1,17 @@
+{
+  "tabSize": 4,
+  "vimMode": true,
+  "showLineNumber": true,
+  "newFileLocation": "current",
+  "newLinkFormat": "shortest",
+  "readableLineLength": false,
+  "strictLineBreaks": false,
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "_lib/assets",
+  "pdfExportSettings": {
+    "pageSize": "Letter",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}

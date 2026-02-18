@@ -1,0 +1,9 @@
+# for macos
+.DS_Store
+
+# for obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# for nodejs
+node_modules/

@@ -1,0 +1,20 @@
+meta {
+  name: find one todos
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{EXPRESS_DEV}}/todos/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 2
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
