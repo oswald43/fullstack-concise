@@ -216,7 +216,7 @@ nest g s todos --no-spec
 nest g mo todos  # ✅
 ```
 
-## Controller
+## Controller (passthrough)
 
 - https://docs.nestjs.com/controllers#routing
 
@@ -229,9 +229,6 @@ nest g mo todos  # ✅
 > Library-specific
 > We can use the library-specific (e.g., Express) [response object](https://expressjs.com/en/api.html#res), which can be injected using the `@Res()` decorator in the method handler signature (e.g., `findAll(@Res() response)`). With this approach, you have the ability to use the native response handling methods exposed by that object. For example, with Express, you can construct responses using code like `response.status(200).send()`.
 
-## Passthrough
-
-> **Warning**
 > Nest detects when the handler is using either `@Res()` or `@Next()`, indicating you have chosen the library-specific option. If both approaches are used at the same time, the Standard approach is **automatically disabled** for this single route and will no longer work as expected. To use both approaches at the same time (for example, by injecting the response object to only set cookies/headers but still leave the rest to the framework), you must set the `passthrough` option to `true` in the `@Res({ passthrough: true })` decorator.
 
 ## Req
