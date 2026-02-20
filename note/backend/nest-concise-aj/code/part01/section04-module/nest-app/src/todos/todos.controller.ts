@@ -3,11 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { TodosService } from './todos.service';
 
 @Controller('todos')
@@ -37,9 +40,12 @@ export class TodosController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Res({ passthrough: true }) res: Response) {
     const todo = this.todosService.deleteTodo(+id);
-    if (!todo) throw new NotFoundException({ message: 'Todo not found' });
-    return todo;
+    if (!todo)
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: 'Todo not found' });
+    return { message: 'Todo deleted' }; // Because @Res, if there is no passthrough, the request will never get a reply.
   }
 }
