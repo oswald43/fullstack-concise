@@ -1,0 +1,53 @@
+meta {
+  name: TodosController_create
+  type: http
+  seq: 2
+  tags: [
+    Todos
+  ]
+}
+
+post {
+  url: {{baseUrl}}/todos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "",
+    "content": "",
+    "isCompleted": false
+  }
+}
+
+example {
+  name: 201 Response
+  
+  request: {
+    url: {{baseUrl}}/todos
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "title": "",
+        "content": "",
+        "isCompleted": false
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

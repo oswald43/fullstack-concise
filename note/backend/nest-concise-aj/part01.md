@@ -406,12 +406,191 @@ export class CreateTodoDto {
   }
 ```
 
-# Resource
+# Resource ✅✅
 
 ## Cli
 
 - https://docs.nestjs.com/cli/usages#nest-generate
 
 ```shell
-nest g res todos --no-spec  # ✅✅
+# nest g res
+nest g res events --no-spec  # ✅✅
+```
+
+## Resource
+
+- https://docs.nestjs.com/controllers#full-resource-sample
+- https://docs.nestjs.com/recipes/crud-generator
+
+> Nest CLI offers a generator (schematic) that automatically creates **all the boilerplate code**, saving you from doing this manually and improving the overall developer experience. Learn more about this feature [here](https://docs.nestjs.com/recipes/crud-generator).
+
+# Openapi & Swagger
+
+## Install
+
+- https://docs.nestjs.com/openapi/introduction
+
+```shell
+pnpm install --save @nestjs/swagger
+```
+
+## Register
+
+```ts
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ValidationPipe } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Swagger docs
+  // https://docs.nestjs.com/openapi/introduction
+  const config = new DocumentBuilder()
+    .setTitle("todo-app")
+    .setDescription("The todos API description")
+    .setVersion("1.0")
+    .addServer("http://localhost:3000", "Local server")
+    .addServer("https://todo-app.com", "Production server")
+    .addTag("todos")
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  // // http://localhost:3000/api
+  // // http://localhost:3000/api-json
+  // SwaggerModule.setup('api', app, documentFactory);
+  // http://localhost:3000/swagger
+  // http://localhost:3000/swagger/json
+  SwaggerModule.setup("swagger", app, documentFactory, {
+    jsonDocumentUrl: "swagger/json",
+  });
+
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
+```
+
+## Decorator ⚠️
+
+- https://docs.nestjs.com/openapi/operations
+
+## Type Inference (nest-cli.json) ✅
+
+https://docs.nestjs.com/openapi/cli-plugin
+
+```json
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "plugins": ["@nestjs/swagger"]
+  }
+}
+```
+
+## Mapped-types
+
+- https://docs.nestjs.com/openapi/mapped-types
+
+```ts
+// import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from "@nestjs/swagger";
+import { CreateTodoDto } from "./create-todo.dto";
+
+export class UpdateTodoDto extends PartialType(CreateTodoDto) {}
+```
+
+## Sync Bruno
+
+- json: `openapi.json`
+- url: http://localhost:3000/swagger/json
+
+# SWC: Compile TS to JS
+
+## Compile to JS (dist)
+
+- **TypeScript compiler (TSC)** is written in TypeScript, with a future plan to migrate to Go.
+- **SWC** is written in Rust and delivers significantly faster build times.
+
+- https://docs.nestjs.com/first-steps#running-the-application
+
+> To speed up the development process (x20 times faster builds), you can use the [SWC builder](https://docs.nestjs.com/recipes/swc) by passing the `-b swc` flag to the `start` script, as follows `npm run start -- -b swc`.
+
+## Install
+
+```shell
+pnpm i --save-dev @swc/cli @swc/core
+# nest start -b swc
+# OR: nest start --builder swc
+```
+
+## (nest-cli.json)
+
+```json
+{
+  "compilerOptions": {
+    "builder": "swc"
+  }
+}
+```
+
+```shell
+➜  nest-app git:(main) ✗ pnpm install -g gnomon
+➜  nest-app git:(main) ✗ pnpm build | gnomon  # without swc
+   0.0384s
+   0.0000s   > nest-app@0.0.1 build /Users/oswin902/Documents/code3/base/fullstack-concise/note/backend/nest-concise-aj/code/part01/section09-swc/nest-
+             app
+   0.0000s   > nest build
+   1.6576s
+   0.0001s
+
+     Total   1.6965s
+➜  nest-app git:(main) ✗ pnpm build | gnomon  # with swc
+   0.0010s
+   0.0000s   > nest-app@0.0.1 build /Users/oswin902/Documents/code3/base/fullstack-concise/note/backend/nest-concise-aj/code/part01/section09-swc/nest-
+             app
+   0.0000s   > nest build
+   0.0620s
+             >  SWC  Running...
+   0.5668s   >  SWC  Running... with swc (50.58ms)
+   0.0001s
+
+     Total   0.6301s
+```
+
+## Swagger Plugin (fix, but not recommended)
+
+- SWC based on **Rust**.
+- Swagger Plugin automatically generates docs, based on **the type and metadata reflection of the TypeScript**.
+
+- https://docs.nestjs.com/recipes/swc#cli-plugins-swc
+- https://docs.nestjs.com/openapi/cli-plugin#swc-builder
+
+```json
+{
+  "compilerOptions": {
+    "builder": "swc",
+    "typeCheck": true // --type-check
+  }
+}
+```
+
+```shell
+➜  nest-app git:(main) ✗ pnpm build  # src/metadata.ts
+
+> nest-app@0.0.1 build /Users/oswin902/Documents/code3/base/fullstack-concise/note/backend/nest-concise-aj/code/part01/section09-swc/nest-app
+> nest build
+
+✔  TSC  Initializing type checker...
+>  TSC  Found 0 issues. Generating metadata...
+>  SWC  Running...
+Successfully compiled: 12 files with swc (66.32ms)
+```
+
+```ts
+import metadata from "./metadata"; // <-- file auto-generated by the "PluginMetadataGenerator"
+
+await SwaggerModule.loadPluginMetadata(metadata); // <-- here
+const document = SwaggerModule.createDocument(app, config);
 ```

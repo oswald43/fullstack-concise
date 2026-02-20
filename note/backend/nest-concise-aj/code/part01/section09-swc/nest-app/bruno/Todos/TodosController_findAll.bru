@@ -1,0 +1,49 @@
+meta {
+  name: TodosController_findAll
+  type: http
+  seq: 1
+  tags: [
+    Todos
+  ]
+}
+
+get {
+  url: {{baseUrl}}/todos
+  body: none
+  auth: inherit
+}
+
+example {
+  name: 200 Response
+  
+  request: {
+    url: {{baseUrl}}/todos
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "id": 0,
+            "title": "",
+            "content": "",
+            "isCompleted": false
+          }
+        ]
+      '''
+    }
+  }
+}

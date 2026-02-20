@@ -1,0 +1,65 @@
+meta {
+  name: TodosController_update
+  type: http
+  seq: 4
+  tags: [
+    Todos
+  ]
+}
+
+patch {
+  url: {{baseUrl}}/todos/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "title": "",
+    "content": "",
+    "isCompleted": false
+  }
+}
+
+example {
+  name: 200 Response
+  
+  request: {
+    url: {{baseUrl}}/todos/:id
+    method: PATCH
+    mode: json
+    params:path: {
+      id: 
+    }
+  
+    body:json: {
+      {
+        "title": "",
+        "content": "",
+        "isCompleted": false
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {}
+      '''
+    }
+  }
+}
