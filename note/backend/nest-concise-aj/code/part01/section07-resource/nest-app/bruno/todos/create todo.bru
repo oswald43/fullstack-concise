@@ -1,0 +1,118 @@
+meta {
+  name: create todo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{NEST_DEV}}/todos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Svelte",
+    "content": "svelte kit",
+    "isCompleted": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: success
+  
+  request: {
+    url: {{NEST_DEV}}/todos
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "title": "Svelte",
+        "content": "svelte kit",
+        "isCompleted": false
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      x-powered-by: Express
+      content-type: application/json; charset=utf-8
+      content-length: 68
+      etag: W/"44-rZtc7fyb0GdWBngYBI15pwMAhRY"
+      date: Fri, 20 Feb 2026 08:09:35 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 4,
+          "title": "Svelte",
+          "content": "svelte kit",
+          "isCompleted": false
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: reject fields that shouldn't exist
+  
+  request: {
+    url: {{NEST_DEV}}/todos
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "id": 1043,
+        "title": "Svelte",
+        "content": "svelte kit",
+        "isCompleted": false
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      x-powered-by: Express
+      content-type: application/json; charset=utf-8
+      content-length: 83
+      etag: W/"53-qMkg1W7Co+sisELD7fyOGixl8gQ"
+      date: Fri, 20 Feb 2026 08:11:49 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "message": [
+            "property id should not exist"
+          ],
+          "error": "Bad Request",
+          "statusCode": 400
+        }
+      '''
+    }
+  }
+}

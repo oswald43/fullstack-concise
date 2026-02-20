@@ -279,19 +279,139 @@ nest g mo todos  # ✅
 
 - https://docs.nestjs.com/modules
 
->  `providers`: the providers that will be instantiated by the Nest injector and that may be shared at least across this module
->  `controllers`: the set of controllers defined in this module which have to be instantiated
->  `imports`: the list of imported modules that export the providers which are required in this module
->  `exports`: the subset of `providers` that are provided by this module and should be available in other modules which import this module. You can use either the provider itself or just its token (`provide` value)
+> `providers`: the providers that will be instantiated by the Nest injector and that may be shared at least across this module
+> `controllers`: the set of controllers defined in this module which have to be instantiated
+> `imports`: the list of imported modules that export the providers which are required in this module
+> `exports`: the subset of `providers` that are provided by this module and should be available in other modules which import this module. You can use either the provider itself or just its token (`provide` value)
 
 # DTO & Pipe
 
-```ts
+## DTO
 
+- https://docs.nestjs.com/controllers#request-payloads
+
+> In our previous example, the POST route handler didn’t accept any client parameters. Let's fix that by adding the `@Body()` decorator.
+>
+> Before we proceed (if you're using TypeScript), we need to define the **DTO** (Data Transfer Object) schema. A DTO is an object that specifies how data should be sent over the network. We could define the DTO schema using **TypeScript** interfaces or simple classes. However, we recommend using **classes** here. Why? Classes are part of the JavaScript ES6 standard, so they remain intact as real entities in the compiled JavaScript. In contrast, TypeScript interfaces are removed during transpilation, meaning Nest can't reference them at runtime. This is important because features like **Pipes** rely on having access to the metatype of variables at runtime, which is only possible with classes.
+
+src/todos/dto/create-todo.dto.ts
+
+```ts
+export class CreateTodoDto {
+  title: string;
+  content: string;
+  isCompleted: boolean;
+}
+```
+
+## Mapped-types
+
+- https://docs.nestjs.com/techniques/validation#mapped-types
+
+> As you build out features like **CRUD** (Create/Read/Update/Delete) it's often useful to construct variants on a base entity type. Nest provides several utility functions that perform type transformations to make this task more convenient.
+>
+> When building input validation types (also called DTOs), it's often useful to build **create** and **update** variations on the same type. For example, the **create** variant may require all fields, while the **update** variant may make all fields optional.
+> Nest provides the `PartialType()` utility function to make this task easier and minimize boilerplate.
+
+src/todos/dto/update-todo.dto.ts
+
+```ts
+import { PartialType } from "@nestjs/mapped-types";
+import { CreateTodoDto } from "./create-todo.dto";
+
+export class UpdateTodoDto extends PartialType(CreateTodoDto) {}
+```
+
+## Pipe (ValidationPipe)
+
+- https://docs.nestjs.com/techniques/validation#validation
+- https://docs.nestjs.com/pipes
+
+> Pipes have two typical use cases:
+>
+> - **transformation**: transform input data to the desired form (e.g., from string to integer)
+> - **validation**: evaluate input data and if valid, simply pass it through unchanged; otherwise, throw an exception
+
+- https://docs.nestjs.com/techniques/validation#using-the-built-in-validationpipe
+
+```shell
+pnpm i --save class-validator class-transformer
+```
+
+```ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // ✅ Global registration of pipe
+  // https://docs.nestjs.com/pipes#class-validator
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // filter but not reject
+      forbidNonWhitelisted: true, // reject
+      transform: true, // transform type with ts
+    }),
+  );
+
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
+```
+
+```ts
+import { IsBoolean, IsString, MaxLength, MinLength } from "class-validator";
+
+export class CreateTodoDto {
+  @IsString()
+  @MinLength(3)
+  title: string;
+
+  @IsString()
+  @MaxLength(100)
+  content: string;
+
+  @IsBoolean()
+  isCompleted: boolean;
+}
+```
+
+## Pipe (transformation)
+
+- https://docs.nestjs.com/pipes#built-in-pipes
+- https://docs.nestjs.com/pipes#binding-pipes
+- https://docs.nestjs.com/techniques/validation#transform-payload-objects
+
+```ts
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   // +id as number ✅
+  //   const todo = this.todosService.findOneTodo(+id);
+  //   if (!todo) throw new NotFoundException();
+  //   return todo;
+  // }
+
+  // @Get(':id')
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  //   // Route parameter pipes ✅
+  //   const todo = this.todosService.findOneTodo(id);
+  //   if (!todo) throw new NotFoundException();
+  //   return todo;
+  // }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    // Global pipes ✅
+    const todo = this.todosService.findOneTodo(id);
+    if (!todo) throw new NotFoundException();
+    return todo;
+  }
 ```
 
 # Resource
 
-```shell
+## Cli
 
+- https://docs.nestjs.com/cli/usages#nest-generate
+
+```shell
+nest g res todos --no-spec  # ✅✅
 ```
