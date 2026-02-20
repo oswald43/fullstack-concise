@@ -35,7 +35,7 @@
 
 ## Expiration
 
-- 2026-02-09 `nest@11.1.13` https://www.bilibili.com/video/BV1DbcMzbEkw https://github.com/13RTK/nestjs-concise
+- Nest Concise 2026-02-09 `nest@11.1.13` https://www.bilibili.com/video/BV1DbcMzbEkw https://github.com/13RTK/nestjs-concise
 
 # First Application
 
@@ -43,7 +43,7 @@
 
 - https://expressjs.com/
 
-## Nest
+## Nest (cli)
 
 - https://docs.nestjs.com/#installation
 - https://docs.nestjs.com/cli/overview
@@ -205,12 +205,80 @@ let AppController = class AppController {
 
 # Controller & Service
 
-```ts
+## Cli
 
+- https://docs.nestjs.com/cli/usages#nest-generate
+
+```shell
+nest g co todos --no-spec
+nest g s todos --no-spec
+
+nest g mo todos
+```
+
+## Controller
+
+- https://docs.nestjs.com/controllers#routing
+
+> This method will return a 200 status code along with the associated response, which in this case is just a string. Why does this happen? To explain, we first need to introduce the concept that Nest uses two **different** options for manipulating responses:
+>
+> Standard (recommended)
+> Using this built-in method, when a request handler returns a JavaScript object or array, it will **automatically** be serialized to JSON. When it returns a JavaScript primitive type (e.g., `string`, `number`, `boolean`), however, Nest will send just the value without attempting to serialize it. This makes response handling simple: just return the value, and Nest takes care of the rest.  
+> Furthermore, the response's **status code** is always 200 by default, except for POST requests which use 201. We can easily change this behavior by adding the `@HttpCode(...)` decorator at a handler-level (see [Status codes](https://docs.nestjs.com/controllers#status-code)).
+>
+> Library-specific
+> We can use the library-specific (e.g., Express) [response object](https://expressjs.com/en/api.html#res), which can be injected using the `@Res()` decorator in the method handler signature (e.g., `findAll(@Res() response)`). With this approach, you have the ability to use the native response handling methods exposed by that object. For example, with Express, you can construct responses using code like `response.status(200).send()`.
+
+## Req
+
+- https://docs.nestjs.com/controllers#route-parameters
+- https://docs.nestjs.com/controllers#request-object
+
+```ts
+  // @Get()
+  // findOne(@Req() req: Request) {
+  //   const { id } = req.params;
+  // }
+
+  // @Get(':id')
+  // findOne(@Param() param: { id: string }) {
+  //   const { id } = param;
+  // }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+  }
+```
+
+## Res
+
+- https://docs.nestjs.com/controllers#status-code
+
+```ts
+  // @Delete(':id')
+  // remove(@Param('id') id: string, @Res() res: Response) {
+  //   const todo = this.todoService.deleteTodo(+id);
+  //   if (!todo)
+  //     res.status(HttpStatus.NOT_FOUND).json({ message: 'Todo not found' });
+  //   return todo;
+  // }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    const todo = this.todoService.deleteTodo(+id);
+    if (!todo) throw new NotFoundException({ message: 'Todo not found' });
+    return todo;
+  }
 ```
 
 # DTO & Pipe
 
 ```ts
+
+```
+
+# Resource
+
+```shell
 
 ```

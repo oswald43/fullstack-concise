@@ -36,9 +36,9 @@ export function remove(req, res) {
 
 export function update(req, res) {
   const { id } = req.params;
-  const updatedTodo = req.body;
+  const newTodo = req.body;
 
-  const todo = updateTodo(Number(id), updatedTodo);
+  const todo = updateTodo(Number(id), newTodo);
   if (!todo) return res.status(404).json({ message: "Todo not found" });
   return res.json(todo);
 }

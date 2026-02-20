@@ -14,7 +14,8 @@ export function findOneTodo(id) {
 }
 
 export function createTodo(newTodo) {
-  const todo = { id: todos.length + 1, ...newTodo };
+  const id = todos[todos.length - 1].id + 1;
+  const todo = { id, ...newTodo };
   todos.push(todo);
   return todo;
 }
@@ -22,13 +23,15 @@ export function createTodo(newTodo) {
 export function deleteTodo(id) {
   const index = todos.findIndex((todo) => todo.id === id);
   if (index === -1) return null;
-  todos.splice(index, 1); // TODO
-  return todos[index];
+
+  const [deletedTodo] = todos.splice(index, 1);
+  return deletedTodo;
 }
 
-export function updateTodo(id, updatedTodo) {
+export function updateTodo(id, newTodo) {
   const index = todos.findIndex((todo) => todo.id === id);
   if (index === -1) return null;
-  todos[index] = { id, ...updatedTodo };
+
+  todos[index] = { id, ...newTodo };
   return todos[index];
 }
