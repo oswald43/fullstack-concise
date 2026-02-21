@@ -157,12 +157,14 @@ fetchGreeting().then((greeting) => {
 
 ## Job Board Architecture
 
-- Frontend: react
-- Database: sqlite
-- Data Access: knex
-- Backend: express
-- GraphQL Server: apollo
-- Auth: jwt
+- Frontend: `React`, `Vue`, `Angular`, `Svelte`, ...; `Next`, `Remix`, `Nuxt`, ...
+- Database: `Sqlite`, `PostgreSQL`, `MySQL`, `Aurora`, ...; `MongoDB`, `DynamoDB`, `Firestore`, ...
+- Data Access: `SQLite3` (Native Driver); `Knex` (Query Builder); `Prisma`, `Sequelize` (ORM)
+- Backend: `Express`
+- GraphQL Server: `Apollo`
+- Auth: `JWT`
+
+![](/_lib/excalidraw/job-board-arch.svg)
 
 ## Apollo Server with Express
 
