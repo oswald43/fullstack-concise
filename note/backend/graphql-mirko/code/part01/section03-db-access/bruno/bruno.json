@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "name": "job-board",
+  "type": "collection",
+  "ignore": ["node_modules", ".git"]
+}

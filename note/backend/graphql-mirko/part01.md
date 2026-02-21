@@ -166,11 +166,178 @@ fetchGreeting().then((greeting) => {
 
 ![](/_lib/excalidraw/job-board-arch.svg)
 
+## Job Board Project
+
+...
+
 ## Apollo Server with Express
+
+- https://www.apollographql.com/docs/apollo-server/integrations/integration-index
+- http://apollographql.com/docs/apollo-server/api/express-middleware
+- The standalone version of Apollo Server also use Express internally.
+
+```shell
+pnpm add @apollo/server graphql
+pnpm i @as-integrations/express5
+```
+
+```js
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware as apolloMiddleware } from "@as-integrations/express5";
+import cors from "cors";
+import express from "express";
+import { readFile } from "node:fs/promises";
+import { authMiddleware, handleLogin } from "./auth.js";
+import { resolvers } from "./resolvers.js"; // 2️⃣
+
+const app = express();
+app.use(cors(), express.json(), authMiddleware);
+app.post("/login", handleLogin);
+
+const typeDefs = await readFile("./schema.graphql", "utf8"); // 1️⃣
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
+await apolloServer.start();
+app.use("/graphql", apolloMiddleware(apolloServer));
+
+const port = 9000;
+app.listen({ port }, () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`GraphQL endpoint: http://localhost:${port}/graphql`);
+});
+```
 
 ## Custom Object Types
 
+- https://graphql.org/learn/schema/#scalar-types
+
+> GraphQL comes with a set of [default Scalar types](https://spec.graphql.org/draft/#sec-Scalars.Built-in-Scalars) out of the box:
+>
+> - `Int`: A signed 32‐bit integer.
+> - `Float`: A signed double-precision floating-point value.
+> - `String`: A UTF‐8 character sequence.
+> - `Boolean`: `true` or `false`.
+> - `ID`: **A unique identifier**, often used to refetch an object or as the key for a cache. The `ID` type is serialized in the same way as a `String`; however, defining it as an `ID` signifies that it is not intended to be human‐readable.
+
+- [schema.graphql](/note/backend/graphql-mirko/code/part01/section02-apollo-express/server/schema.graphql)
+- [resolvers.js](/note/backend/graphql-mirko/code/part01/section02-apollo-express/server/src/resolvers.js)
+
+```
+query {
+  job {
+    title
+  }
+}
+
+---
+
+{
+  "data": {
+    "job": {
+      "title": "Full-Stack Developer"
+    }
+  }
+}
+```
+
 ## Arrays and Non-Nullability
+
+```
+query {
+  job {
+    id
+    title
+  }
+}
+
+---
+
+{
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Job.id.",
+      "locations": [
+        {
+          "line": 3,
+          "column": 5
+        }
+      ],
+      "path": [
+        "job",
+        "id"  // ❌
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "stacktrace": [
+          "Error: Cannot return null for non-nullable field Job.id."
+        ]
+      }
+    }
+  ],
+  "data": {
+    "job": null
+  }
+}
+```
+
+```
+query {
+  jobs {
+    title
+  }
+}
+
+---
+
+{
+  "data": {
+    "jobs": [
+      {
+        "title": "Full-Stack Developer"
+      },
+      {
+        "title": "Backend Developer"
+      }
+    ]
+  }
+}
+```
+
+```
+query {
+  jobs {
+    title
+  }
+}
+
+---
+
+{
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Query.jobs.",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": [
+        "jobs",
+        2  // ❌
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "stacktrace": [
+          "Error: Cannot return null for non-nullable field Query.jobs."
+        ]
+      }
+    }
+  ],
+  "data": {
+    "jobs": null
+  }
+}
+```
 
 ## Database Access
 

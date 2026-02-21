@@ -1,0 +1,22 @@
+meta {
+  name: greeting
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query {
+    greeting
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

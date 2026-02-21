@@ -1,0 +1,14 @@
+# https://graphql.org/learn/schema/#scalar-types
+# Remember that in graphql all fields are nullable by default
+# Unless we specify otherwise
+type Query {
+  greeting: String
+  job: Job
+  jobs: [Job!]
+}
+
+type Job {
+  id: ID! # Not allowed to be null, otherwise error
+  title: String!
+  description: String
+}

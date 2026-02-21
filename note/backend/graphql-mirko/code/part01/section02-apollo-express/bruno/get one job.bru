@@ -1,0 +1,26 @@
+meta {
+  name: get one job
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query {
+    job {
+      id
+      title
+    }
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
