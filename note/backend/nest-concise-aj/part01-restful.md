@@ -25,7 +25,7 @@
 
 ## Content
 
-- RESTful in Nestjs, Database/ORM in Nestjs, Security
+- RESTful in NestJS, Database/ORM in NestJS, Security
 - GraphQL, Test(Vitest), 3rd-part integration(supabase, neon, log, datadog, sentry)
 
 ## Prerequisites
@@ -559,7 +559,7 @@ pnpm i --save-dev @swc/cli @swc/core
      Total   0.6301s
 ```
 
-## Swagger Plugin (fix, but not recommended)
+## Swagger Plugin (fix, but not recommend)
 
 - SWC based on **Rust**.
 - Swagger Plugin automatically generates docs, based on **the type and metadata reflection of the TypeScript**.
