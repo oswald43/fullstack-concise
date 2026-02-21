@@ -8,3 +8,5 @@
 # for nodejs
 node_modules/
 dist/
+
+*.sqlite3
