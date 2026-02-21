@@ -1,31 +1,29 @@
+import { getJob, getJobs } from "./model/jobs.js";
+
 export const resolvers = {
+  // (parent, args, context, info)
   Query: {
-    greeting: () => "Hello GraphQL&Express!",
+    job: (_, { id }) => getJob(id),
+    jobs: () => getJobs(),
+  },
 
-    job: () => {
-      return {
-        id: "6mA05AZxvS1R",
-        title: "Full-Stack Developer",
-        description:
-          "We are looking for a Full-Stack Developer familiar with Node.js, Express, and React.",
-      };
-    },
-
-    jobs: () => {
-      return [
-        {
-          id: "6mA05AZxvS1R",
-          title: "Full-Stack Developer",
-          description:
-            "We are looking for a Full-Stack Developer familiar with Node.js, Express, and React.",
-        },
-        {
-          id: "XYZNJMXFax6n",
-          title: "Backend Developer",
-          description:
-            "We are looking for a Backend Developer familiar with Node.js and Express.",
-        },
-      ];
-    },
+  // Resolver function: it resolves the value for that field
+  Job: {
+    date: ({ createdAt }) => toIsoData(createdAt),
   },
 };
+
+function toIsoData(value) {
+  return value.slice(0, "yyyy-mm-dd".length);
+}
+[
+  {
+    data: {
+      jobs: [
+        { id: "f3YzmnBZpK0o", date: "2025-01-26" },
+        { id: "XYZNJMXFax6n", date: "2025-01-27" },
+        { id: "6mA05AZxvS1R", date: "2025-01-30" },
+      ],
+    },
+  },
+];

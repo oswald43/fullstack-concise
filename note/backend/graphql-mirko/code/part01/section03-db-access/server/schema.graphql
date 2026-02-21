@@ -3,12 +3,14 @@
 # Unless we specify otherwise
 type Query {
   greeting: String
-  job: Job
+  job(id: ID!): Job
   jobs: [Job!]
 }
 
 type Job {
   id: ID! # Not allowed to be null, otherwise error
+  companyId: String
   title: String!
   description: String
+  date: String! # ISO 8601 # The field does not exist in DB
 }

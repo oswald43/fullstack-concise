@@ -341,9 +341,62 @@ query {
 
 ## Database Access
 
+- https://knexjs.org/
+
+- [schema.graphql](/note/backend/graphql-mirko/code/part01/section03-db-access/server/schema.graphql)
+- [resolvers.js](/note/backend/graphql-mirko/code/part01/section03-db-access/server/src/resolvers.js)
+
+```
+# Query
+query {
+  job(id: "XYZNJMXFax6n") {
+    id
+    title
+  }
+}
+```
+
+```
+# Query
+query GetJob($id: ID!) {
+  job(id: $id) {
+    id
+    title
+  }
+}
+
+# Variables
+{
+  "id": "XYZNJMXFax6n"
+}
+```
+
 ## Field Resolvers
 
+```js
+import { getJob, getJobs } from "./model/jobs.js";
+
+export const resolvers = {
+  // (parent, args, context, info)
+  Query: {
+    job: (_, { id }) => getJob(id),
+    jobs: () => getJobs(),
+  },
+
+  // Resolver function: it resolves the value for that field
+  Job: {
+    date: ({ createdAt }) => toIsoData(createdAt),
+  },
+};
+
+function toIsoData(value) {
+  return value.slice(0, "yyyy-mm-dd".length);
+}
+```
+
 ## Resolver Chain
+
+![resolver-chain](/_lib/excalidraw/resolver-chain.svg)
 
 ## Documentation Comments
 

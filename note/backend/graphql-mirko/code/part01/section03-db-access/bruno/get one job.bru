@@ -1,7 +1,7 @@
 meta {
   name: get one job
   type: graphql
-  seq: 3
+  seq: 2
 }
 
 post {
@@ -11,13 +11,20 @@ post {
 }
 
 body:graphql {
-  query {
-    job {
+  query GetJob($id: ID!) {
+    job(id: $id) {
       id
       title
+      date
     }
   }
   
+}
+
+body:graphql:vars {
+  {
+    "id": "XYZNJMXFax6n"
+  }
 }
 
 settings {
